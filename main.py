@@ -2,7 +2,7 @@ from logging import Logger
 from fastapi import FastAPI
 
 from utils import get_logger, get_server
-from utils import AuthPayload, LoginPayload, LogoutPayload, RegisterPayload, Response
+from utils import AuthPayload, LoginPayload, LogoutPayload, RegisterPayload
 from utils import handle_wrapper, handle_auth, handle_login, handle_logout, handle_register
 
 logger: Logger = get_logger(__name__)

@@ -2,6 +2,9 @@ import os
 import requests
 from typing import Dict
 from google.cloud import storage
+import vertexai
+from vertexai.preview import rag
+from vertexai.preview.rag.utils.resources import RagManagedDb
 from utils.Payload import RegisterPayload, Response
 
 """
@@ -27,6 +30,10 @@ class FailedCreateDirectory(Exception):
     pass
 
 
+class FailedCreateCorpus(Exception):
+    pass
+
+
 def handle_register(payload: RegisterPayload) -> Response:
     try:
         return Response(status_code=200, content=get_content(payload))
@@ -44,6 +51,7 @@ def handle_register(payload: RegisterPayload) -> Response:
 def get_content(payload: RegisterPayload) -> Dict[str, str]:
     uid = register_request(payload)
     ret = create_directory(uid)
+    create_directory(uid)
 
     if not ret:
         raise FailedCreateDirectory()
@@ -88,3 +96,28 @@ def create_directory(uid: str) -> bool:
 
     except Exception:
         raise FailedCreateDirectory()
+
+
+def create_corpus(uid: str) -> None:
+    try:
+        project = os.environ['PROJECT_ID']
+        location = 'us-central1'
+
+        vertexai.init(project=project, location=location)
+
+        embedding_model_config = rag.EmbeddingModelConfig(
+            publisher_model='publishers/google/models/text-multilingual-embedding-002'
+        )
+
+        corpus = rag.create_corpus(
+            display_name=uid,
+            description=f'corpus_{uid}',
+            embedding_model_config=embedding_model_config,
+            vector_db=RagManagedDb()
+        )
+
+        print(corpus)
+
+    except Exception:
+        raise FailedCreateCorpus()
+

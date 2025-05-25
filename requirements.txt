@@ -4,3 +4,4 @@ fastapi
 uvicorn[standard]
 firebase_admin
 google
+vertexai

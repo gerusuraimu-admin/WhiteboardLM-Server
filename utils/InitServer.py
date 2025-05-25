@@ -6,6 +6,8 @@ from .Lifespan import lifespan
 
 def get_server() -> FastAPI:
     server: FastAPI
+
+    # TODO: 本番デプロイでは、notを外すこと！
     deploy = not bool(int(os.environ['DEPLOY']))
 
     if deploy:

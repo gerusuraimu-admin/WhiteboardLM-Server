@@ -15,19 +15,19 @@ async def auth(payload: AuthPayload):
     return handle_auth(payload)
 
 
-@server.post("/login")
+@server.post('/login')
 @handle_wrapper
 async def login(payload: LoginPayload):
     return handle_login(payload)
 
 
-@server.post("/logout")
+@server.post('/logout')
 @handle_wrapper
 async def logout(payload: LogoutPayload):
     return handle_logout(payload)
 
 
-@server.post("/register")
+@server.post('/register')
 @handle_wrapper
 async def register(payload: RegisterPayload):
     return handle_register(payload)

@@ -6,7 +6,7 @@ from .Lifespan import lifespan
 
 def get_server() -> FastAPI:
     server: FastAPI
-    deploy = bool(int(os.environ['DEPLOY']))
+    deploy = not bool(int(os.environ['DEPLOY']))
 
     if deploy:
         server = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)

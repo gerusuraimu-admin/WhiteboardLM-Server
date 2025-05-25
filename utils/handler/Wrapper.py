@@ -5,7 +5,7 @@ from utils.Payload import Response
 
 def handle_wrapper(func):
     @functools.wraps(func)
-    async def wrapper(payload):
+    async def wrapper(payload) -> JSONResponse:
         try:
             response: Response = await func(payload)
             return JSONResponse(**response.__dict__)

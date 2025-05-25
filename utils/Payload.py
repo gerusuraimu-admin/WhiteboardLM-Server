@@ -8,7 +8,7 @@ class AuthPayload(BaseModel):
 
 
 class LoginPayload(BaseModel):
-    username: str
+    email: str
     password: str
 
 
@@ -18,7 +18,7 @@ class LogoutPayload(BaseModel):
 
 
 class RegisterPayload(BaseModel):
-    username: str
+    email: str
     password: str
 
 

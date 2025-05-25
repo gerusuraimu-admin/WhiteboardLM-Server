@@ -30,7 +30,7 @@ WhiteboardLM-Auth は WhiteboardLM-Web における認証サービスを提供�
 
 ```json
 {
-  "username": "ユーザー名",
+  "email": "メールアドレス",
   "password": "パスワード"
 }
 ```
@@ -58,7 +58,7 @@ WhiteboardLM-Auth は WhiteboardLM-Web における認証サービスを提供�
 
 ```json
 {
-  "username": "ユーザー名",
+  "email": "メールアドレス",
   "password": "パスワード"
 }
 ```

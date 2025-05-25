@@ -1,6 +1,6 @@
 import os
 import requests
-from typing import Any, Dict
+from typing import Dict
 from utils.Session import Session
 from utils.Payload import LoginPayload, Response
 
@@ -53,7 +53,7 @@ def get_content(payload: LoginPayload) -> Dict[str, str]:
     return content
 
 
-def login_request(payload: LoginPayload) -> Dict[str, Any]:
+def login_request(payload: LoginPayload) -> Dict[str, str]:
     api_key = os.environ['API_KEY']
     url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={api_key}"
 

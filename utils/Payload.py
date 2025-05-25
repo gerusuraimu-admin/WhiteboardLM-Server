@@ -13,6 +13,7 @@ class LoginPayload(BaseModel):
 
 
 class LogoutPayload(BaseModel):
+    uid: str
     session_id: str
 
 

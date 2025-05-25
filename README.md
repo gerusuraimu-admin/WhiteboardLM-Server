@@ -44,6 +44,7 @@ WhiteboardLM-Auth は WhiteboardLM-Web における認証サービスを提供�
 
 ```json
 {
+  "uid": "ユーザーID",
   "session_id": "セッションID"
 }
 ```

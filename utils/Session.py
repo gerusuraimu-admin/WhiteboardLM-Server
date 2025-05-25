@@ -30,7 +30,7 @@ class Session:
         if self.session.get(uid) is None:
             raise InvalidAuthError()
 
-        if self.token.get(session_id) is None:
+        if self.token.get(uid) is None:
             raise InvalidAuthError()
 
         if self.__get_session_id(uid) != session_id:
@@ -54,14 +54,24 @@ class Session:
     def logout(self, uid: str, session_id: str) -> bool:
         ret = False
 
-        if self.auth(uid, session_id):
+        try:
+            self.auth(uid, session_id)
+
+        except InvalidAuthError:
+            pass
+
+        except Exception:
+            raise InvalidAuthError()
+
+        else:
             ret = True
 
-        with self._lock:
-            if uid in self.session:
-                del self.session[uid]
-            if uid in self.token:
-                del self.token[uid]
+        finally:
+            with self._lock:
+                if uid in self.session:
+                    del self.session[uid]
+                if uid in self.token:
+                    del self.token[uid]
 
         return ret
 

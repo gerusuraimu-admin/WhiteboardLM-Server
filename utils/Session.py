@@ -18,6 +18,7 @@ class Session:
 
     def __init__(self) -> None:
         self.session: Dict[str, float] = dict()
+        self.token: Dict[str, str] = dict()
 
     def __new__(cls, *args, **kwargs) -> "Session":
         with cls._lock:
@@ -29,6 +30,9 @@ class Session:
         if self.session.get(uid) is None:
             raise InvalidAuthError()
 
+        if self.token.get(session_id) is None:
+            raise InvalidAuthError()
+
         if self.__get_session_id(uid) != session_id:
             raise InvalidAuthError()
 
@@ -37,22 +41,32 @@ class Session:
                 del self.session[uid]
             raise InvalidAuthError()
 
-        return self.login(uid)
+        token = self.token.get(uid)
 
-    def login(self, uid: str) -> str:
+        return self.login(uid, token)
+
+    def login(self, uid: str, token: str) -> str:
         with self._lock:
             self.session[uid] = time()
+            self.token[uid] = token
         return self.__get_session_id(uid)
 
     def logout(self, uid: str, session_id: str) -> bool:
+        ret = False
+
         if self.auth(uid, session_id):
-            with self._lock:
+            ret = True
+
+        with self._lock:
+            if uid in self.session:
                 del self.session[uid]
-            return True
-        else:
-            return False
+            if uid in self.token:
+                del self.token[uid]
+
+        return ret
 
     def __get_session_id(self, uid: str) -> str:
         get_time: float = self.session.get(uid)
-        script = f'{uid}{get_time}'
+        get_token: str = self.token.get(uid)
+        script = f'{uid}{get_time}{get_token}'
         return sha512(script.encode()).hexdigest()

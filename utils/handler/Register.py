@@ -3,8 +3,8 @@ import requests
 from typing import Dict
 from google.cloud import storage
 import vertexai
-from vertexai.preview import rag
-from vertexai.preview.rag.utils.resources import RagManagedDb
+from vertexai import rag
+from vertexai.generative_models import GenerativeModel, Tool
 from utils.Payload import RegisterPayload, Response
 
 """
@@ -51,10 +51,11 @@ def handle_register(payload: RegisterPayload) -> Response:
 def get_content(payload: RegisterPayload) -> Dict[str, str]:
     uid = register_request(payload)
     ret = create_directory(uid)
-    create_directory(uid)
 
     if not ret:
         raise FailedCreateDirectory()
+
+    create_directory(uid)
 
     message = 'Register Successful'
 
@@ -102,22 +103,37 @@ def create_corpus(uid: str) -> None:
     try:
         project = os.environ['PROJECT_ID']
         location = 'us-central1'
+        display_name = uid
+        model = 'text-multilingual-embedding-002'
 
         vertexai.init(project=project, location=location)
 
-        embedding_model_config = rag.EmbeddingModelConfig(
-            publisher_model='publishers/google/models/text-multilingual-embedding-002'
+        rag_embedding_model_config = rag.RagEmbeddingModelConfig(
+            rag.VertexPredictionEndpoint(
+                publisher_model=f'projects/{project}/locations/{location}/publishers/google/models/{model}'
+            )
         )
 
-        corpus = rag.create_corpus(
-            display_name=uid,
-            description=f'corpus_{uid}',
-            embedding_model_config=embedding_model_config,
-            vector_db=RagManagedDb()
+        rag_corpus = rag.create_corpus(
+            display_name=display_name,
+            backend_config=rag.RagVectorDbConfig(
+                rag_embedding_model_config=rag_embedding_model_config
+            )
         )
 
-        print(corpus)
+        path = [f'gs://{os.environ["BUCKET"]}/documents/{uid}']
+        transformation_config = rag.TransformationConfig(
+            chunking_config=rag.ChunkingConfig(
+                chunk_size=128,
+                chunk_overlap=32
+            )
+        )
+
+        rag.import_files(
+            rag_corpus.name,
+            path,
+            transformation_config=transformation_config
+        )
 
     except Exception:
         raise FailedCreateCorpus()
-

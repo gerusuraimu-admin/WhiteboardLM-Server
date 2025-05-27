@@ -120,6 +120,10 @@ def create_corpus(uid: str) -> None:
             )
         )
 
+        """
+        ファイルインポートはファイルアップロード処理が完了した後にリクエストを受け付ける専用のエンドポイントにした方がいいか？
+        ->ファイルアップロード処理に直接連携してしまうと、ベクトル化がファイル毎に発生して処理がとんでもないことになりそう。
+          あと、ファイルアップロード処理自体はフロントエンドで担当した方がおそらくシステムとしておさまりがいい。
         path = [f'gs://{os.environ["BUCKET"]}/{uid}']
         transformation_config = rag.TransformationConfig(
             chunking_config=rag.ChunkingConfig(
@@ -133,6 +137,7 @@ def create_corpus(uid: str) -> None:
             path,
             transformation_config=transformation_config
         )
+        """
 
     except Exception:
         raise FailedCreateCorpus()

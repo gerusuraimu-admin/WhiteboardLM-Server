@@ -1,7 +1,6 @@
 import os
 import requests
 from typing import Dict
-from google.cloud import storage
 import vertexai
 from vertexai import rag
 from utils.Payload import RegisterPayload, Response
@@ -49,13 +48,7 @@ def handle_register(payload: RegisterPayload) -> Response:
 
 def get_content(payload: RegisterPayload) -> Dict[str, str]:
     uid = register_request(payload)
-    ret = create_directory(uid)
-
-    if not ret:
-        raise FailedCreateDirectory()
-
     create_corpus(uid)
-
     message = 'Register Successful'
 
     content = {
@@ -82,22 +75,6 @@ def register_request(payload: RegisterPayload) -> str:
     return response.json().get("localId")
 
 
-def create_directory(uid: str) -> bool:
-    try:
-        client = storage.Client()
-        bucket = client.get_bucket(os.environ["BUCKET"])
-        path = f'documents/{uid}/.keep'
-        blob = bucket.blob(path)
-
-        if not blob.exists():
-            blob.upload_from_string('', content_type='text/plain')
-
-        return True
-
-    except Exception:
-        raise FailedCreateDirectory()
-
-
 def create_corpus(uid: str) -> None:
     try:
         project = os.environ['PROJECT_ID']
@@ -113,31 +90,12 @@ def create_corpus(uid: str) -> None:
             )
         )
 
-        rag_corpus = rag.create_corpus(
+        rag.create_corpus(
             display_name=display_name,
             backend_config=rag.RagVectorDbConfig(
                 rag_embedding_model_config=rag_embedding_model_config
             )
         )
-
-        """
-        ファイルインポートはファイルアップロード処理が完了した後にリクエストを受け付ける専用のエンドポイントにした方がいいか？
-        ->ファイルアップロード処理に直接連携してしまうと、ベクトル化がファイル毎に発生して処理がとんでもないことになりそう。
-          あと、ファイルアップロード処理自体はフロントエンドで担当した方がおそらくシステムとしておさまりがいい。
-        path = [f'gs://{os.environ["BUCKET"]}/{uid}']
-        transformation_config = rag.TransformationConfig(
-            chunking_config=rag.ChunkingConfig(
-                chunk_size=128,
-                chunk_overlap=32
-            )
-        )
-
-        rag.import_files(
-            rag_corpus.name,
-            path,
-            transformation_config=transformation_config
-        )
-        """
 
     except Exception:
         raise FailedCreateCorpus()

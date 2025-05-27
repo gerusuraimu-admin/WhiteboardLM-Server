@@ -50,12 +50,11 @@ def handle_register(payload: RegisterPayload) -> Response:
 def get_content(payload: RegisterPayload) -> Dict[str, str]:
     uid = register_request(payload)
     ret = create_directory(uid)
-    create_directory(uid)
 
     if not ret:
         raise FailedCreateDirectory()
 
-    create_directory(uid)
+    create_corpus(uid)
 
     message = 'Register Successful'
 

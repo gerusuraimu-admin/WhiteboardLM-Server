@@ -120,7 +120,7 @@ def create_corpus(uid: str) -> None:
             )
         )
 
-        path = [f'gs://{os.environ["BUCKET"]}']
+        path = [f'gs://{os.environ["BUCKET"]}/{uid}']
         transformation_config = rag.TransformationConfig(
             chunking_config=rag.ChunkingConfig(
                 chunk_size=128,

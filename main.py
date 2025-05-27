@@ -3,7 +3,14 @@ from fastapi import FastAPI
 
 from utils import get_logger, get_server
 from utils import AuthPayload, LoginPayload, LogoutPayload, RegisterPayload
-from utils import handle_wrapper, handle_auth, handle_login, handle_logout, handle_register, handle_embed
+from utils import (
+    handle_wrapper,
+    handle_auth,
+    handle_login,
+    handle_logout,
+    handle_register,
+    handle_embed
+)
 
 logger: Logger = get_logger(__name__)
 server: FastAPI = get_server()

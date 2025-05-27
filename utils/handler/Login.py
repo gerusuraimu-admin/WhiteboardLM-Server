@@ -18,6 +18,11 @@ content = {
     'session_id': session_id,
     'message': message
 }
+
+message:
+    - Login Successful ... Firebase Authenticationによる認証に成功した
+    - Failed to login ... Firebase Authenticationによる認証に失敗した
+    - その他例外
 """
 
 
@@ -38,10 +43,10 @@ def handle_login(payload: LoginPayload) -> Response:
 
 def get_content(payload: LoginPayload) -> Dict[str, str]:
     response = login_request(payload)
-    uid = response.get("localId")
+    uid = response.get('localId')
 
     session = Session()
-    session_id = session.login(uid, response.get("refreshToken"))
+    session_id = session.login(uid, response.get('refreshToken'))
     message = 'Login Successful'
 
     content = {
@@ -55,12 +60,12 @@ def get_content(payload: LoginPayload) -> Dict[str, str]:
 
 def login_request(payload: LoginPayload) -> Dict[str, str]:
     api_key = os.environ['API_KEY']
-    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={api_key}"
+    url = f'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={api_key}'
 
     auth_payload = {
-        "email": payload.email,
-        "password": payload.password,
-        "returnSecureToken": True
+        'email': payload.email,
+        'password': payload.password,
+        'returnSecureToken': True
     }
 
     response = requests.post(url, json=auth_payload)

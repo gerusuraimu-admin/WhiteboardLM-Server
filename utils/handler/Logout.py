@@ -16,6 +16,11 @@ content = {
     'session_id': session_id,
     'message': message
 }
+
+message:
+    - Logout Successful ... 正規のユーザーからのログアウトリクエストが成功した
+    - Invalid Auth ... 正規ユーザーによるリクエストとして扱えなかった
+    - その他例外
 """
 
 

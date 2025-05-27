@@ -16,6 +16,11 @@ content = {
     'session_id': session_id,
     'message': message
 }
+
+message:
+    - Auth Successful ... 正規ユーザーによるリクエストとして扱った
+    - Invalid Auth ... 正規ユーザーによるリクエストとして扱えなかった
+    - その他例外
 """
 
 

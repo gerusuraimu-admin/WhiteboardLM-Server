@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from .Logger import get_logger
+from utils.Logger import get_logger
 
 
 @asynccontextmanager

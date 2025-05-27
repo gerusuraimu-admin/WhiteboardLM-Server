@@ -18,6 +18,12 @@ content = {
     'session_id': session_id,
     'message': message
 }
+
+message:
+    - Update corpus successfully ... RAGコーパスのデータソース更新が正常に終了
+    - Invalid Auth ... 正規ユーザーによるリクエストとして扱えなかった
+    - Corpus not found ... データソースを更新すべきRAGコーパスが存在しなかった
+    - その他例外
 """
 
 
@@ -42,9 +48,6 @@ def handle_embed(payload: AuthPayload) -> Response:
 
     except InvalidAuthError:
         return Response(status_code=401, content={'message': 'Invalid Auth'})
-
-    except FailedCreateCorpus:
-        return Response(status_code=401, content={'message': 'Failed to create corpus'})
 
     except CorpusNotFound:
         return Response(status_code=404, content={'message': 'Corpus not found'})

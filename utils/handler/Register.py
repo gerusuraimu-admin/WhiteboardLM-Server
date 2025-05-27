@@ -17,14 +17,16 @@ Response:
 content = {
     'message': message
 }
+
+message:
+    - Register Successful ... 新規ユーザー登録に成功した
+    - Failed to register ... 新規ユーザー登録に失敗した
+    - Failed to create corpus ... RAGコーパスの自動生成に失敗した
+    - その他例外
 """
 
 
 class InvalidRegisterError(Exception):
-    pass
-
-
-class FailedCreateDirectory(Exception):
     pass
 
 
@@ -39,8 +41,8 @@ def handle_register(payload: RegisterPayload) -> Response:
     except InvalidRegisterError:
         return Response(status_code=401, content={'message': f'Failed to register'})
 
-    except FailedCreateDirectory:
-        return Response(status_code=500, content={'message': f'Failed to create directory'})
+    except FailedCreateCorpus:
+        return Response(status_code=500, content={'message': f'Failed to create corpus'})
 
     except Exception as e:
         return Response(status_code=500, content={'message': str(e)})
@@ -60,19 +62,19 @@ def get_content(payload: RegisterPayload) -> Dict[str, str]:
 
 def register_request(payload: RegisterPayload) -> str:
     api_key = os.environ['API_KEY']
-    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={api_key}"
+    url = f'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={api_key}'
 
     auth_payload = {
-        "email": payload.email,
-        "password": payload.password,
-        "returnSecureToken": True
+        'email': payload.email,
+        'password': payload.password,
+        'returnSecureToken': True
     }
 
     response = requests.post(url, json=auth_payload)
     if response.status_code != 200:
         raise InvalidRegisterError()
 
-    return response.json().get("localId")
+    return response.json().get('localId')
 
 
 def create_corpus(uid: str) -> None:

@@ -4,7 +4,6 @@ from typing import Dict
 from google.cloud import storage
 import vertexai
 from vertexai import rag
-from vertexai.generative_models import GenerativeModel, Tool
 from utils.Payload import RegisterPayload, Response
 
 """
@@ -51,6 +50,7 @@ def handle_register(payload: RegisterPayload) -> Response:
 def get_content(payload: RegisterPayload) -> Dict[str, str]:
     uid = register_request(payload)
     ret = create_directory(uid)
+    create_directory(uid)
 
     if not ret:
         raise FailedCreateDirectory()
@@ -121,7 +121,7 @@ def create_corpus(uid: str) -> None:
             )
         )
 
-        path = [f'gs://{os.environ["BUCKET"]}/documents/{uid}']
+        path = [f'gs://{os.environ["BUCKET"]}']
         transformation_config = rag.TransformationConfig(
             chunking_config=rag.ChunkingConfig(
                 chunk_size=128,

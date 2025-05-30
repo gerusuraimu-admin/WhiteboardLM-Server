@@ -52,7 +52,7 @@ def prompt(payload: QueryPayload) -> str:
         )
     )
 
-    model = GenerativeModel(model_name='text-multilingual-embedding-002', tools=[tool])
+    model = GenerativeModel(model_name='gemini-2.0-flash-lite-001', tools=[tool])
     response = model.generate_content(payload.message)
 
     return str(response)

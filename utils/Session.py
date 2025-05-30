@@ -12,6 +12,10 @@ class InvalidAuthError(Exception):
     pass
 
 
+class SessionTimeOutError(Exception):
+    pass
+
+
 class Session:
     _lock: Lock = Lock()
     _instance: "Session" = None
@@ -27,19 +31,13 @@ class Session:
         return cls._instance
 
     def auth(self, uid: str, session_id: str) -> str:
-        if self.session.get(uid) is None:
-            raise InvalidAuthError()
-
-        if self.token.get(uid) is None:
-            raise InvalidAuthError()
-
         if self.__get_session_id(uid) != session_id:
             raise InvalidAuthError()
 
         if 300 <= time() - self.session.get(uid):
             with self._lock:
                 del self.session[uid]
-            raise InvalidAuthError()
+            raise SessionTimeOutError()
 
         token = self.token.get(uid)
 
@@ -76,7 +74,7 @@ class Session:
         return ret
 
     def __get_session_id(self, uid: str) -> str:
-        get_time: float = self.session.get(uid)
-        get_token: str = self.token.get(uid)
+        get_time: float = self.session.get(uid, 0)
+        get_token: str = self.token.get(uid, '')
         script = f'{uid}{get_time}{get_token}'
         return sha512(script.encode()).hexdigest()

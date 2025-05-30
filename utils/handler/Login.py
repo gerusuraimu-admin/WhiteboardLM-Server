@@ -44,9 +44,10 @@ def handle_login(payload: LoginPayload) -> Response:
 def get_content(payload: LoginPayload) -> Dict[str, str]:
     response = login_request(payload)
     uid = response.get('localId')
+    token = response.get('refreshToken')
 
     session = Session()
-    session_id = session.login(uid, response.get('refreshToken'))
+    session_id = session.login(uid, token)
     message = 'Login Successful'
 
     content = {

@@ -44,3 +44,9 @@ async def register(payload: RegisterPayload):
 @handle_wrapper
 async def embed(payload: AuthPayload):
     return handle_embed(payload)
+
+
+@server.post('/query')
+@handle_wrapper
+async def query():
+    pass

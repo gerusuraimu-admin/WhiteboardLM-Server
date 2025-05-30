@@ -1,6 +1,6 @@
 from typing import Dict
 from utils.Payload import AuthPayload, Response
-from utils.Session import Session, InvalidAuthError
+from utils.Session import Session, InvalidAuthError, SessionTimeOutError
 
 """
 AuthPayload:
@@ -30,6 +30,9 @@ def handle_auth(payload: AuthPayload) -> Response:
 
     except InvalidAuthError:
         return Response(status_code=401, content={'message': 'Invalid Auth'})
+
+    except SessionTimeOutError:
+        return Response(status_code=401, content={'message': 'Session Timed Out'})
 
     except Exception as e:
         return Response(status_code=500, content={'message': str(e)})

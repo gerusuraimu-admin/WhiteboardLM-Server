@@ -4,6 +4,9 @@ from utils.Session import Session
 from utils.Session import InvalidAuthError
 from utils.Payload import AuthPayload, Response
 from utils.handler.Auth import handle_auth
+from utils.Logger import getLogger
+
+logger = getLogger('Embed')
 
 """
 AuthPayload:
@@ -59,6 +62,10 @@ def handle_embed(payload: AuthPayload, session: Session) -> Response:
 
 def update_corpus(payload: AuthPayload) -> None:
     try:
+        for corpus in rag.list_corpora():
+            for k, v in vars(corpus).items():
+                logger.info(f'{corpus.name}: {k} => {v}')
+
         corpus_list = [corpus.name for corpus in rag.list_corpora() if payload.uid in corpus.name]
         if not corpus_list:
             raise CorpusNotFound()

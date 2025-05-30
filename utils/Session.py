@@ -75,7 +75,11 @@ class Session:
         return ret
 
     def __get_session_id(self, uid: str) -> str:
-        get_time: float = self.session.get(uid, 0)
-        get_token: str = self.token.get(uid, '')
+        get_time: float = self.session.get(uid)
+        get_token: str = self.token.get(uid)
+
+        if get_time is None or get_token is None:
+            raise InvalidAuthError(f'No data session or token {get_time} and {get_token}')
+
         script = f'{uid}{get_time}{get_token}'
         return sha512(script.encode()).hexdigest()

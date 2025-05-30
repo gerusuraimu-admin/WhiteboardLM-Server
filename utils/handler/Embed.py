@@ -4,9 +4,6 @@ from utils.Session import Session
 from utils.Session import InvalidAuthError
 from utils.Payload import AuthPayload, Response
 from utils.handler.Auth import handle_auth
-from utils.Logger import getLogger
-
-logger = getLogger('Embed')
 
 """
 AuthPayload:
@@ -81,6 +78,8 @@ def update_corpus(payload: AuthPayload) -> None:
             path,
             transformation_config=transformation_config
         )
+    except CorpusNotFound:
+        raise CorpusNotFound()
 
-    except Exception:
-        raise FailedCreateCorpus()
+    except Exception as e:
+        raise FailedCreateCorpus(f'Failed to create corpus: {e}')

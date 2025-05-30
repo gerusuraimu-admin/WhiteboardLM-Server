@@ -1,6 +1,5 @@
 from vertexai import rag
 from vertexai.generative_models import GenerativeModel, Tool
-from utils.Session import Session
 from utils.handler.Embed import CorpusNotFound
 from utils.Payload import QueryPayload, Response
 
@@ -22,10 +21,13 @@ message:
 """
 
 
-def handle_query(payload: QueryPayload, session: Session) -> Response:
+def handle_query(payload: QueryPayload) -> Response:
     try:
         result = prompt(payload)
         return Response(status_code=200, content={'message': result})
+
+    except CorpusNotFound:
+        return Response(status_code=404, content={'message': 'Corpus not found'})
 
     except Exception as e:
         return Response(status_code=500, content={'message': str(e)})
@@ -50,7 +52,7 @@ def prompt(payload: QueryPayload) -> str:
         )
     )
 
-    model = GenerativeModel(model_name='gemini-1.5-flash-002', tools=[tool])
+    model = GenerativeModel(model_name='text-multilingual-embedding-002', tools=[tool])
     response = model.generate_content(payload.message)
 
     return str(response)

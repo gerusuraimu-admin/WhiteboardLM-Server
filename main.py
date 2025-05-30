@@ -54,4 +54,4 @@ async def embed(payload: AuthPayload):
 @server.post('/query')
 @handle_wrapper
 async def query(payload: QueryPayload):
-    return handle_query(payload, session)
+    return handle_query(payload)

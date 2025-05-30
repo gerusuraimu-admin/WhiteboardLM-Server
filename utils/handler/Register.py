@@ -50,11 +50,12 @@ def handle_register(payload: RegisterPayload) -> Response:
 
 def get_content(payload: RegisterPayload) -> Dict[str, str]:
     uid = register_request(payload)
-    create_corpus(uid)
+    corpus_name = create_corpus(uid)
     message = 'Register Successful'
 
     content = {
-        'message': message
+        'message': message,
+        'corpus_name': corpus_name
     }
 
     return content
@@ -77,7 +78,7 @@ def register_request(payload: RegisterPayload) -> str:
     return response.json().get('localId')
 
 
-def create_corpus(uid: str) -> None:
+def create_corpus(uid: str) -> str:
     try:
         project = os.environ['PROJECT_ID']
         location = 'us-central1'
@@ -92,12 +93,14 @@ def create_corpus(uid: str) -> None:
             )
         )
 
-        rag.create_corpus(
+        corpus = rag.create_corpus(
             display_name=display_name,
             backend_config=rag.RagVectorDbConfig(
                 rag_embedding_model_config=rag_embedding_model_config
             )
         )
+
+        return corpus.name
 
     except Exception:
         raise FailedCreateCorpus()

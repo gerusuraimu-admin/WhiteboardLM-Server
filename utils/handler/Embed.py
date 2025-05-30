@@ -63,6 +63,8 @@ def update_corpus(payload: AuthPayload) -> None:
         if not corpus_list:
             raise CorpusNotFound()
 
+        corpus_name = corpus_list[0]
+
         path = [f'gs://{os.environ["BUCKET"]}/{payload.uid}']
         transformation_config = rag.TransformationConfig(
             chunking_config=rag.ChunkingConfig(
@@ -72,10 +74,10 @@ def update_corpus(payload: AuthPayload) -> None:
         )
 
         rag.import_files(
-            payload.uid,
+            corpus_name,
             path,
             transformation_config=transformation_config
         )
 
-    except Exception as e:
-        raise FailedCreateCorpus(f'Failed to create corpus: {str(e)}')
+    except Exception:
+        raise FailedCreateCorpus()

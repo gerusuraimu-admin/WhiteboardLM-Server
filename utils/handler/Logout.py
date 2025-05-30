@@ -39,7 +39,7 @@ def get_content(payload: LogoutPayload, session: Session) -> Dict[str, str]:
     ret = session.logout(payload.uid, payload.session_id)
 
     if not ret:
-        raise InvalidAuthError
+        raise InvalidAuthError()
 
     message = 'Logout Successful'
 

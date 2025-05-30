@@ -59,13 +59,14 @@ def handle_embed(payload: AuthPayload, session: Session) -> Response:
 
 def update_corpus(payload: AuthPayload) -> None:
     try:
-        corpus_list = [corpus for corpus in rag.list_corpora() if payload.uid in corpus.display_name]
+        corpus_list = [corpus for corpus in rag.list_corpora() if payload.uid == corpus.display_name]
         if not corpus_list:
             raise CorpusNotFound()
 
         corpus_name = corpus_list[0].name
 
         path = [f'gs://{os.environ["BUCKET"]}/documents/{payload.uid}']
+        # TODO: チャンクサイズとオーバーラップはデプロイのタイミングではもう少し大きくすること！
         transformation_config = rag.TransformationConfig(
             chunking_config=rag.ChunkingConfig(
                 chunk_size=128,

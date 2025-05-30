@@ -2,14 +2,19 @@ from logging import Logger
 from fastapi import FastAPI
 
 from utils import get_logger, get_server, Session
-from utils import AuthPayload, LoginPayload, LogoutPayload, RegisterPayload
 from utils import (
     handle_wrapper,
     handle_auth,
     handle_login,
     handle_logout,
     handle_register,
-    handle_embed
+    handle_embed,
+    handle_query,
+    AuthPayload,
+    LoginPayload,
+    LogoutPayload,
+    RegisterPayload,
+    QueryPayload
 )
 
 logger: Logger = get_logger(__name__)
@@ -48,5 +53,5 @@ async def embed(payload: AuthPayload):
 
 @server.post('/query')
 @handle_wrapper
-async def query():
-    pass
+async def query(payload: QueryPayload):
+    return handle_query(payload, session)

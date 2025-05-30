@@ -25,3 +25,9 @@ class RegisterPayload(BaseModel):
 class Response(BaseModel):
     status_code: int
     content: Dict[str, Any]
+
+
+class QueryPayload(BaseModel):
+    uid: str
+    session_id: str
+    message: str

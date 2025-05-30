@@ -33,7 +33,7 @@ class Session:
     def auth(self, uid: str, session_id: str) -> str:
         challenge_session = self.__get_session_id(uid)
         if challenge_session != session_id:
-            raise InvalidAuthError(f'No match session {challenge_session} and {session_id}')
+            raise InvalidAuthError()
 
         if 300 <= time() - self.session.get(uid):
             with self._lock:
@@ -77,9 +77,5 @@ class Session:
     def __get_session_id(self, uid: str) -> str:
         get_time: float = self.session.get(uid)
         get_token: str = self.token.get(uid)
-
-        if get_time is None or get_token is None:
-            raise InvalidAuthError(f'No data session or token {get_time} and {get_token}')
-
         script = f'{uid}{get_time}{get_token}'
         return sha512(script.encode()).hexdigest()

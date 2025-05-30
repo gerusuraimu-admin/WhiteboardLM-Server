@@ -17,7 +17,9 @@ content = {
 }
 
 message:
-    -
+    - LLMの応答文 ... 全ての処理が正常に終了
+    - Corpus not found ... RAGコーパスが見つからなかった
+    - その他例外
 """
 
 

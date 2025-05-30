@@ -6,8 +6,8 @@ from utils.Logger import get_logger
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger = get_logger('Lifespan')
-    logger.info(f'Start Login Server: {app}')
+    logger.info(f'Start Callback Server: {app}')
 
     yield
 
-    logger.info(f'End Login Server: {app}')
+    logger.info(f'End Callback Server: {app}')

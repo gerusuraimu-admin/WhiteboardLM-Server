@@ -62,15 +62,11 @@ def handle_embed(payload: AuthPayload, session: Session) -> Response:
 
 def update_corpus(payload: AuthPayload) -> None:
     try:
-        for corpus in rag.list_corpora():
-            for k, v in vars(corpus).items():
-                logger.info(f'{corpus.name}: {k} => {v}')
-
-        corpus_list = [corpus.name for corpus in rag.list_corpora() if payload.uid in corpus.name]
+        corpus_list = [corpus for corpus in rag.list_corpora() if payload.uid in corpus.display_name]
         if not corpus_list:
             raise CorpusNotFound()
 
-        corpus_name = corpus_list[0]
+        corpus_name = corpus_list[0].name
 
         path = [f'gs://{os.environ["BUCKET"]}/{payload.uid}']
         transformation_config = rag.TransformationConfig(

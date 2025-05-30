@@ -24,9 +24,9 @@ message:
 """
 
 
-def handle_auth(payload: AuthPayload) -> Response:
+def handle_auth(payload: AuthPayload, session: Session) -> Response:
     try:
-        return Response(status_code=200, content=get_content(payload))
+        return Response(status_code=200, content=get_content(payload, session))
 
     except InvalidAuthError as e:
         return Response(status_code=401, content={'message': f'Invalid Auth ... {e}'})
@@ -38,8 +38,7 @@ def handle_auth(payload: AuthPayload) -> Response:
         return Response(status_code=500, content={'message': str(e)})
 
 
-def get_content(payload: AuthPayload) -> Dict[str, str]:
-    session = Session()
+def get_content(payload: AuthPayload, session: Session) -> Dict[str, str]:
     session_id = session.auth(payload.uid, payload.session_id)
     message = 'Auth Successful'
 

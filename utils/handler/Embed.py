@@ -1,5 +1,6 @@
 import os
 from vertexai import rag
+from utils.Session import Session
 from utils.Session import InvalidAuthError
 from utils.Payload import AuthPayload, Response
 from utils.handler.Auth import handle_auth
@@ -35,9 +36,9 @@ class CorpusNotFound(Exception):
     pass
 
 
-def handle_embed(payload: AuthPayload) -> Response:
+def handle_embed(payload: AuthPayload, session: Session) -> Response:
     try:
-        response: Response = handle_auth(payload)
+        response: Response = handle_auth(payload, session)
         if response.status_code != 200:
             raise InvalidAuthError()
 

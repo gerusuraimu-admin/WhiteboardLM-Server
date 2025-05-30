@@ -24,9 +24,9 @@ message:
 """
 
 
-def handle_logout(payload: LogoutPayload) -> Response:
+def handle_logout(payload: LogoutPayload, session: Session) -> Response:
     try:
-        return Response(status_code=200, content=get_content(payload))
+        return Response(status_code=200, content=get_content(payload, session))
 
     except InvalidAuthError:
         return Response(status_code=401, content={'message': 'Invalid Auth'})
@@ -35,8 +35,7 @@ def handle_logout(payload: LogoutPayload) -> Response:
         return Response(status_code=500, content={'message': str(e)})
 
 
-def get_content(payload: LogoutPayload) -> Dict[str, str]:
-    session = Session()
+def get_content(payload: LogoutPayload, session: Session) -> Dict[str, str]:
     ret = session.logout(payload.uid, payload.session_id)
 
     if not ret:

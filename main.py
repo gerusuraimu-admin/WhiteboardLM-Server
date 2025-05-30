@@ -1,7 +1,7 @@
 from logging import Logger
 from fastapi import FastAPI
 
-from utils import get_logger, get_server
+from utils import get_logger, get_server, Session
 from utils import AuthPayload, LoginPayload, LogoutPayload, RegisterPayload
 from utils import (
     handle_wrapper,
@@ -14,24 +14,24 @@ from utils import (
 
 logger: Logger = get_logger(__name__)
 server: FastAPI = get_server()
-
+session: Session = Session()
 
 @server.post('/auth')
 @handle_wrapper
 async def auth(payload: AuthPayload):
-    return handle_auth(payload)
+    return handle_auth(payload, session)
 
 
 @server.post('/login')
 @handle_wrapper
 async def login(payload: LoginPayload):
-    return handle_login(payload)
+    return handle_login(payload, session)
 
 
 @server.post('/logout')
 @handle_wrapper
 async def logout(payload: LogoutPayload):
-    return handle_logout(payload)
+    return handle_logout(payload, session)
 
 
 @server.post('/register')
@@ -43,7 +43,7 @@ async def register(payload: RegisterPayload):
 @server.post('/embed')
 @handle_wrapper
 async def embed(payload: AuthPayload):
-    return handle_embed(payload)
+    return handle_embed(payload, session)
 
 
 @server.post('/query')

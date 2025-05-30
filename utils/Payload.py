@@ -29,5 +29,4 @@ class Response(BaseModel):
 
 class QueryPayload(BaseModel):
     uid: str
-    session_id: str
     message: str

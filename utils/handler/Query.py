@@ -1,13 +1,12 @@
 from vertexai import rag
+from vertexai.generative_models import GenerativeModel, Tool
 from utils.Session import Session
-from utils.handler.Auth import handle_auth, InvalidAuthError
 from utils.handler.Embed import CorpusNotFound
-from utils.Payload import QueryPayload, AuthPayload, Response
+from utils.Payload import QueryPayload, Response
 
 """
 QueryPayload:
     uid: str
-    session_id: str
     message: str
 
 Response:
@@ -15,8 +14,6 @@ Response:
     content: Dict[str, Any]
 
 content = {
-    'uid': uid,
-    'session_id': session_id,
     'message': message
 }
 
@@ -27,14 +24,8 @@ message:
 
 def handle_query(payload: QueryPayload, session: Session) -> Response:
     try:
-        auth_payload = AuthPayload(uid=payload.uid, session_id=payload.session_id)
-        response: Response = handle_auth(auth_payload, session)
-        if response.status_code != 200:
-            raise InvalidAuthError()
-
         result = prompt(payload)
-        response.content['message'] = result
-        return response
+        return Response(status_code=200, content={'message': result})
 
     except Exception as e:
         return Response(status_code=500, content={'message': str(e)})
@@ -47,21 +38,19 @@ def prompt(payload: QueryPayload) -> str:
 
     corpus_name = corpus_list[0].name
 
-    rag_config = rag.RagRetrievalConfig(
-        top_k=10,
-        filter=rag.Filter(
-            vector_distance_threshold=0.5
+    tool = Tool.from_retrieval(
+        retrieval=rag.Retrieval(
+            source=rag.VertexRagStore(
+                rag_resources=[
+                    rag.RagResource(
+                        rag_corpus=corpus_name
+                    )
+                ]
+            )
         )
     )
 
-    response = rag.retrieval_query(
-        rag_resources=[
-            rag.RagResource(
-                rag_corpus=corpus_name
-            )
-        ],
-        text=payload.message,
-        rag_retrieval_config=rag_config
-    )
+    model = GenerativeModel(model_name='gemini-1.5-flash-002', tools=[tool])
+    response = model.generate_content(payload.message)
 
     return str(response)

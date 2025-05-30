@@ -28,8 +28,8 @@ def handle_auth(payload: AuthPayload) -> Response:
     try:
         return Response(status_code=200, content=get_content(payload))
 
-    except InvalidAuthError:
-        return Response(status_code=401, content={'message': 'Invalid Auth'})
+    except InvalidAuthError as e:
+        return Response(status_code=401, content={'message': f'Invalid Auth ... {e}'})
 
     except SessionTimeOutError:
         return Response(status_code=401, content={'message': 'Session Timed Out'})

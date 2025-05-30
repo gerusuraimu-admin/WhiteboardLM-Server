@@ -31,8 +31,9 @@ class Session:
         return cls._instance
 
     def auth(self, uid: str, session_id: str) -> str:
-        if self.__get_session_id(uid) != session_id:
-            raise InvalidAuthError()
+        challenge_session = self.__get_session_id(uid)
+        if challenge_session != session_id:
+            raise InvalidAuthError(f'No match session {challenge_session} and {session_id}')
 
         if 300 <= time() - self.session.get(uid):
             with self._lock:

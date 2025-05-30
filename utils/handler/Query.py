@@ -55,4 +55,4 @@ def prompt(payload: QueryPayload) -> str:
     model = GenerativeModel(model_name='gemini-2.0-flash-lite-001', tools=[tool])
     response = model.generate_content(payload.message)
 
-    return str(response)
+    return response.text

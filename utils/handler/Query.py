@@ -42,6 +42,13 @@ def prompt(payload: QueryPayload) -> str:
 
     corpus_name = corpus_list[0].name
 
+    config = rag.RagRetrievalConfig(
+        top_k=3,
+        filter=rag.Filter(
+            vector_distance_threshold=0.5
+        )
+    )
+
     tool = Tool.from_retrieval(
         retrieval=rag.Retrieval(
             source=rag.VertexRagStore(
@@ -49,7 +56,8 @@ def prompt(payload: QueryPayload) -> str:
                     rag.RagResource(
                         rag_corpus=corpus_name
                     )
-                ]
+                ],
+                rag_retrieval_config=config
             )
         )
     )

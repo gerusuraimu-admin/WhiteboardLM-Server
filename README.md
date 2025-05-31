@@ -1,8 +1,8 @@
-# WhiteboardLM-Auth
+# WhiteboardLM-Server
 
 ## 概要
 
-WhiteboardLM-Auth は WhiteboardLM-Web における認証サービスを提供するAPIサーバーです。  
+WhiteboardLM-Server は WhiteboardLM-Web における認証サービスを提供するAPIサーバーです。  
 ユーザー登録、ログイン、ログアウト、認証確認の機能を提供します。
 
 ## エンドポイント
@@ -74,6 +74,20 @@ WhiteboardLM-Auth は WhiteboardLM-Web における認証サービスを提供�
 {
   "uid": "ユーザーID",
   "session_id": "セッションID"
+}
+```
+
+### クエリ実行 (Query)
+
+**エンドポイント**: `/query`  
+**メソッド**: POST  
+**説明**: クエリを実行する。  
+**リクエスト本文**:
+
+```json
+{
+  "uid": "ユーザーID",
+  "message": "メッセージ"
 }
 ```
 

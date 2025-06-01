@@ -2,8 +2,9 @@ import os
 from vertexai import rag
 from utils.Session import Session
 from utils.Session import InvalidAuthError
-from utils.Payload import AuthPayload, Response
+from utils.Payload import AuthPayload, EmbedPayload, Response
 from utils.handler.Auth import handle_auth
+from utils.handler.Register import create_corpus
 
 """
 AuthPayload:
@@ -36,9 +37,10 @@ class CorpusNotFound(Exception):
     pass
 
 
-def handle_embed(payload: AuthPayload, session: Session) -> Response:
+def handle_embed(payload: EmbedPayload, session: Session) -> Response:
     try:
-        response: Response = handle_auth(payload, session)
+        auth_payload = AuthPayload(uid=payload.uid, session_id=payload.session_id)
+        response: Response = handle_auth(auth_payload, session)
         if response.status_code != 200:
             raise InvalidAuthError()
 
@@ -57,13 +59,21 @@ def handle_embed(payload: AuthPayload, session: Session) -> Response:
         return Response(status_code=500, content={'message': str(e)})
 
 
-def update_corpus(payload: AuthPayload) -> None:
+def update_corpus(payload: EmbedPayload) -> None:
     try:
         corpus_list = [corpus for corpus in rag.list_corpora() if payload.uid == corpus.display_name]
         if not corpus_list:
             raise CorpusNotFound()
 
         corpus_name = corpus_list[0].name
+
+        files = rag.list_files(corpus_name=corpus_name)
+        if not files:
+            raise CorpusNotFound()
+
+        names = [name.name for name in files if name.display_name not in payload.names]
+        for name in names:
+            rag.delete_file(name=name)
 
         path = [f'gs://{os.environ["BUCKET"]}/documents/{payload.uid}']
         # TODO: チャンクサイズとオーバーラップはデプロイのタイミングではもう少し大きくすること！

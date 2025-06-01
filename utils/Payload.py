@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 from pydantic import BaseModel
 
 
@@ -25,6 +25,12 @@ class RegisterPayload(BaseModel):
 class Response(BaseModel):
     status_code: int
     content: Dict[str, Any]
+
+
+class EmbedPayload(BaseModel):
+    uid: str
+    session_id: str
+    names: List[Any]
 
 
 class QueryPayload(BaseModel):

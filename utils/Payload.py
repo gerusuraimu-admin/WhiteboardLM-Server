@@ -27,12 +27,6 @@ class Response(BaseModel):
     content: Dict[str, Any]
 
 
-class EmbedPayload(BaseModel):
-    uid: str
-    session_id: str
-    names: List[Any]
-
-
 class QueryPayload(BaseModel):
     uid: str
     message: str

@@ -7,7 +7,6 @@ from .Payload import (
     LoginPayload,
     LogoutPayload,
     RegisterPayload,
-    EmbedPayload,
     QueryPayload,
     Response
 )

@@ -2,7 +2,7 @@ import os
 from vertexai import rag
 from utils.Session import Session
 from utils.Session import InvalidAuthError
-from utils.Payload import AuthPayload, EmbedPayload, Response
+from utils.Payload import AuthPayload, Response
 from utils.handler.Auth import handle_auth
 from utils.handler.Register import create_corpus
 
@@ -37,7 +37,7 @@ class CorpusNotFound(Exception):
     pass
 
 
-def handle_embed(payload: EmbedPayload, session: Session) -> Response:
+def handle_embed(payload: AuthPayload, session: Session) -> Response:
     try:
         auth_payload = AuthPayload(uid=payload.uid, session_id=payload.session_id)
         response: Response = handle_auth(auth_payload, session)
@@ -59,7 +59,7 @@ def handle_embed(payload: EmbedPayload, session: Session) -> Response:
         return Response(status_code=500, content={'message': str(e)})
 
 
-def update_corpus(payload: EmbedPayload) -> None:
+def update_corpus(payload: AuthPayload) -> None:
     try:
         corpus_list = [corpus for corpus in rag.list_corpora() if payload.uid == corpus.display_name]
         if not corpus_list:

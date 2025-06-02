@@ -67,7 +67,7 @@ def update_corpus(payload: AuthPayload) -> None:
 
         corpus_name = corpus_list[0].name
 
-        rag.delete_corpus(corpus_name)
+        rag.delete_corpus(name=corpus_name)
         create_corpus(payload.uid)
 
         files = rag.list_files(corpus_name=corpus_name)

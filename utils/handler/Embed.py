@@ -70,6 +70,12 @@ def update_corpus(payload: AuthPayload) -> None:
         rag.delete_corpus(name=corpus_name)
         create_corpus(payload.uid)
 
+        corpus_list = [corpus for corpus in rag.list_corpora() if payload.uid == corpus.display_name]
+        if not corpus_list:
+            raise CorpusNotFound()
+
+        corpus_name = corpus_list[0].name
+
         files = rag.list_files(corpus_name=corpus_name)
         if not files:
             raise CorpusNotFound()

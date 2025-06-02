@@ -44,8 +44,10 @@ def handle_embed(payload: EmbedPayload, session: Session) -> Response:
         if response.status_code != 200:
             raise InvalidAuthError()
 
-        update_corpus(payload)
+        names, display_names = update_corpus(payload)
         response.content['message'] = 'Update corpus successfully'
+        response.content['content']['names'] = names
+        response.content['content']['display_names'] = display_names
 
         return response
 
@@ -59,7 +61,7 @@ def handle_embed(payload: EmbedPayload, session: Session) -> Response:
         return Response(status_code=500, content={'message': str(e)})
 
 
-def update_corpus(payload: EmbedPayload) -> None:
+def update_corpus(payload: EmbedPayload):
     try:
         corpus_list = [corpus for corpus in rag.list_corpora() if payload.uid == corpus.display_name]
         if not corpus_list:
@@ -71,9 +73,8 @@ def update_corpus(payload: EmbedPayload) -> None:
         if not files:
             raise CorpusNotFound()
 
-        names = [name.name for name in files if name.display_name not in payload.names]
-        for name in names:
-            rag.delete_file(name=name)
+        names = [name.name for name in files]
+        display_names = [name.display_name for name in files]
 
         path = [f'gs://{os.environ["BUCKET"]}/documents/{payload.uid}']
         # TODO: チャンクサイズとオーバーラップはデプロイのタイミングではもう少し大きくすること！
@@ -89,6 +90,8 @@ def update_corpus(payload: EmbedPayload) -> None:
             path,
             transformation_config=transformation_config
         )
+
+        return names, display_names
     except CorpusNotFound:
         raise CorpusNotFound()
 

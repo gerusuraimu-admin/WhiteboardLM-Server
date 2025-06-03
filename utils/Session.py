@@ -75,7 +75,6 @@ class Session:
         return ret
 
     def __get_session_id(self, uid: str) -> str:
-        get_time: float = self.session.get(uid)
         get_token: str = self.token.get(uid)
-        script = f'{uid}{get_time}{get_token}'
+        script = f'{uid}{get_token}'
         return sha512(script.encode()).hexdigest()

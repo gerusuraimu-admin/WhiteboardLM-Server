@@ -53,9 +53,7 @@ def handle_embed(payload: AuthPayload, session: Session) -> Response:
         return Response(status_code=401, content={'message': 'Invalid Auth'})
 
     except CorpusNotFound:
-        response.status_code = 404
-        response.content['message'] = 'Corpus not found'
-        return response
+        return Response(status_code=404, content={'message': 'Corpus not found'})
 
     except Exception as e:
         return Response(status_code=500, content={'message': str(e)})

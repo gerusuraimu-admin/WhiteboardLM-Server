@@ -84,8 +84,8 @@ def update_corpus(payload: AuthPayload) -> None:
         # TODO: チャンクサイズとオーバーラップはデプロイのタイミングではもう少し大きくすること！
         transformation_config = rag.TransformationConfig(
             chunking_config=rag.ChunkingConfig(
-                chunk_size=128,
-                chunk_overlap=32
+                chunk_size=1024,
+                chunk_overlap=256
             )
         )
 

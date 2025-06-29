@@ -3,7 +3,14 @@
 ## 概要
 
 WhiteboardLM-Server は WhiteboardLM-Web における認証サービスを提供するAPIサーバーです。  
-ユーザー登録、ログイン、ログアウト、認証確認の機能を提供します。
+ユーザー登録、ログイン、ログアウト、認証確認の機能を提供します。  
+
+本リポジトリの他にも関連リポジトリがあります。  
+そちらも参照してください。  
+
+https://github.com/gerusuraimu-admin/whiteboardlm-frontend  
+https://github.com/gerusuraimu-admin/WhiteboardLM-Proxy  
+https://github.com/gerusuraimu-admin/WhiteboardLM-Bot
 
 ## エンドポイント
 
